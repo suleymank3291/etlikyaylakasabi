@@ -1,12 +1,13 @@
-// site/__mocks__/gsap.ts
-const timeline = jest.fn(() => ({
+const timelineInstance = {
   to: jest.fn().mockReturnThis(),
   from: jest.fn().mockReturnThis(),
   fromTo: jest.fn().mockReturnThis(),
   set: jest.fn().mockReturnThis(),
   add: jest.fn().mockReturnThis(),
   kill: jest.fn().mockReturnThis(),
-}));
+};
+
+const timeline = jest.fn(() => timelineInstance);
 
 const gsap = {
   to: jest.fn(),
@@ -15,7 +16,10 @@ const gsap = {
   set: jest.fn(),
   timeline,
   registerPlugin: jest.fn(),
-  context: jest.fn(() => ({ revert: jest.fn() })),
+  context: jest.fn((callback?: () => void) => {
+    callback?.();
+    return { revert: jest.fn() };
+  }),
 };
 
 export default gsap;
