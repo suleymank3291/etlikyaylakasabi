@@ -1,5 +1,10 @@
 // site/jest.config.ts
 import type { Config } from "jest";
+import nextJest from "next/jest.js";
+
+const createJestConfig = nextJest({
+  dir: "./",
+});
 
 const config: Config = {
   testEnvironment: "jsdom",
@@ -10,11 +15,7 @@ const config: Config = {
     "^gsap/(.*)$": "<rootDir>/__mocks__/gsap.ts",
     "^swiper$": "<rootDir>/__mocks__/swiper.ts",
     "^swiper/(.*)$": "<rootDir>/__mocks__/swiper.ts",
-    "\\.(css|scss)$": "<rootDir>/__mocks__/styleMock.ts",
-  },
-  transform: {
-    "^.+\\.(ts|tsx)$": ["ts-jest", { tsconfig: { jsx: "react-jsx" } }],
   },
 };
 
-export default config;
+export default createJestConfig(config);
