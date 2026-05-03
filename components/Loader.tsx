@@ -20,13 +20,12 @@ export default function Loader({ onComplete }: LoaderProps) {
     const logo = logoRef.current;
     if (!overlay || !logo) return;
 
-    // sessionStorage veya prefers-reduced-motion → atla
+    // prefers-reduced-motion → animasyonsuz geç
     const prefersReduced =
       window.matchMedia?.("(prefers-reduced-motion: reduce)")?.matches ?? false;
 
-    if (sessionStorage.getItem("loaderSeen") || prefersReduced) {
+    if (prefersReduced) {
       overlay.style.display = "none";
-      sessionStorage.setItem("loaderSeen", "1");
       onComplete();
       return;
     }
@@ -95,7 +94,6 @@ export default function Loader({ onComplete }: LoaderProps) {
 
     tl.add(() => {
       document.body.style.overflow = "";
-      sessionStorage.setItem("loaderSeen", "1");
       onComplete();
     }, revealAt + 0.25);
 
