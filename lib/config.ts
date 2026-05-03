@@ -21,11 +21,31 @@ export const HERO = {
 };
 
 export const HERO_SLIDES = [
-  "/images/hero.jpg",
-  "/images/katalog-1.jpg",
-  "/images/katalog-2.jpg",
-  "/images/katalog-3.jpg",
-  "/images/etlikyaylakasabi_1644649384_2771842393604421646_39180567620_1.jpg",
+  {
+    src: "/images/hero.jpg",
+    baslik: "Ankara'nın En Taze Eti",
+    altMetin: "Günlük taze, özel kesim, hijyen garantili.",
+  },
+  {
+    src: "/images/katalog-1.jpg",
+    baslik: "Özel Kesim Hizmetleri",
+    altMetin: "Her sipariş ustaca hazırlanır, taze gelir.",
+  },
+  {
+    src: "/images/katalog-2.jpg",
+    baslik: "Kırmızı Et Uzmanlığı",
+    altMetin: "Dana, kuzu ve koyun etlerinde en iyi kalite.",
+  },
+  {
+    src: "/images/katalog-3.jpg",
+    baslik: "Taze & Hijyenik",
+    altMetin: "Soğuk zinciri kırılmadan doğrudan sofraya.",
+  },
+  {
+    src: "/images/etlikyaylakasabi_1644649384_2771842393604421646_39180567620_1.jpg",
+    baslik: "Yıllardır Güvenilir",
+    altMetin: "Etlik Yayla Kasabı — Keçiören, Ankara.",
+  },
 ];
 
 export const KARSILAMA = {
