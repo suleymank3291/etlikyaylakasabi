@@ -6,7 +6,7 @@ import Link from "next/link";
 import gsap from "gsap";
 import { NAV_LINKS, SITE } from "@/lib/config";
 
-const FULL = { w: 140, h: 196 };
+const FULL = { w: 140, h: 218 };
 const SMALL = { w: 72, h: 72 };
 
 export default function Navbar() {
@@ -96,7 +96,7 @@ export default function Navbar() {
             onMouseEnter={handleEnter}
             onMouseLeave={handleLeave}
             className="bg-primary flex flex-col items-center overflow-hidden cursor-pointer shadow-xl"
-            style={{ width: FULL.w, height: FULL.h }}
+            style={{ width: FULL.w, height: FULL.h, borderRadius: "0 0 10px 10px" }}
           >
             {/* Logo görseli */}
             <div className="relative shrink-0 mt-4" style={{ width: 80, height: 80 }}>
