@@ -18,8 +18,15 @@ export const HERO = {
   baslik: "Ankara'nın En Taze Eti",
   altMetin: "Günlük taze, özel kesim, hijyen garantili.",
   buton: "Kataloğu Gör",
-  gorsel: "/images/hero.jpg",
 };
+
+export const HERO_SLIDES = [
+  "/images/hero.jpg",
+  "/images/katalog-1.jpg",
+  "/images/katalog-2.jpg",
+  "/images/katalog-3.jpg",
+  "/images/etlikyaylakasabi_1644649384_2771842393604421646_39180567620_1.jpg",
+];
 
 export const KARSILAMA = {
   baslik: "Ankara'da Yılın Kasabı",
