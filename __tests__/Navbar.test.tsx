@@ -25,6 +25,8 @@ describe("Navbar", () => {
 
   it("marka adını render eder", () => {
     render(<Navbar />);
-    expect(screen.getByText("ETLİK YAYLA KASABI")).toBeInTheDocument();
+    expect(screen.getByText("Etlik")).toBeInTheDocument();
+    expect(screen.getByText("Yayla")).toBeInTheDocument();
+    expect(screen.getByText("Kasabı")).toBeInTheDocument();
   });
 });

@@ -1,101 +1,142 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import gsap from "gsap";
 import { NAV_LINKS, SITE } from "@/lib/config";
 
+const FULL = { w: 140, h: 196 };
+const SMALL = { w: 72, h: 72 };
+
 export default function Navbar() {
-  const [isScrolled, setIsScrolled] = useState(false);
-  const logoWrapRef = useRef<HTMLDivElement>(null);
-  const logoTextRef = useRef<HTMLSpanElement>(null);
+  const boxRef = useRef<HTMLDivElement>(null);
+  const textRef = useRef<HTMLDivElement>(null);
+  const isScrolledRef = useRef(false);
+  const isHoveredRef = useRef(false);
   const navRef = useRef<HTMLElement>(null);
+
+  const expand = () => {
+    gsap.to(boxRef.current, { width: FULL.w, height: FULL.h, duration: 0.5, ease: "power3.out" });
+    gsap.to(textRef.current, { opacity: 1, y: 0, duration: 0.4, delay: 0.18, ease: "power2.out" });
+  };
+
+  const collapse = () => {
+    gsap.to(boxRef.current, { width: SMALL.w, height: SMALL.h, duration: 0.45, ease: "power2.inOut" });
+    gsap.to(textRef.current, { opacity: 0, y: 8, duration: 0.2, ease: "power2.in" });
+  };
 
   useEffect(() => {
     const onScroll = () => {
-      const scrolled = window.scrollY > 60;
-      if (scrolled === isScrolled) return;
-      setIsScrolled(scrolled);
+      const scrolled = window.scrollY > 80;
+      if (scrolled === isScrolledRef.current) return;
+      isScrolledRef.current = scrolled;
 
-      if (scrolled) {
-        gsap.to(logoWrapRef.current, { width: 52, height: 52, duration: 0.45, ease: "power2.inOut" });
-        gsap.to(logoTextRef.current, { opacity: 0, y: -6, duration: 0.25, ease: "power2.in", pointerEvents: "none" });
-      } else {
-        gsap.to(logoWrapRef.current, { width: 110, height: 110, duration: 0.45, ease: "power2.out" });
-        gsap.to(logoTextRef.current, { opacity: 1, y: 0, duration: 0.35, delay: 0.15, ease: "power2.out", pointerEvents: "auto" });
+      if (navRef.current) {
+        gsap.to(navRef.current, {
+          backgroundColor: scrolled ? "rgba(255,255,255,0.95)" : "transparent",
+          backdropFilter: scrolled ? "blur(12px)" : "blur(0px)",
+          boxShadow: scrolled ? "0 1px 16px rgba(0,0,0,0.08)" : "none",
+          duration: 0.4,
+          ease: "power2.inOut",
+        });
+      }
+
+      if (!isHoveredRef.current) {
+        if (scrolled) collapse();
+        else expand();
       }
     };
 
     window.addEventListener("scroll", onScroll, { passive: true });
     return () => window.removeEventListener("scroll", onScroll);
-  }, [isScrolled]);
+  }, []);
 
-  const handleLogoEnter = () => {
-    if (!isScrolled) return;
-    gsap.to(logoWrapRef.current, { width: 90, height: 90, duration: 0.35, ease: "power2.out" });
+  const handleEnter = () => {
+    isHoveredRef.current = true;
+    if (isScrolledRef.current) expand();
   };
 
-  const handleLogoLeave = () => {
-    if (!isScrolled) return;
-    gsap.to(logoWrapRef.current, { width: 52, height: 52, duration: 0.35, ease: "power2.inOut" });
+  const handleLeave = () => {
+    isHoveredRef.current = false;
+    if (isScrolledRef.current) collapse();
   };
 
-  const linkClass = `text-sm font-medium tracking-wider uppercase transition-colors duration-300 ${
-    isScrolled ? "text-neutral-900 hover:text-primary" : "text-white hover:text-white/70"
-  }`;
+  const linkClass =
+    "text-sm font-medium tracking-wider uppercase text-white hover:text-white/70 transition-colors duration-300";
+
+  const scrolledLinkClass =
+    "text-sm font-medium tracking-wider uppercase text-neutral-900 hover:text-primary transition-colors duration-300";
 
   return (
     <nav
       ref={navRef}
-      className={`fixed top-0 left-0 right-0 z-50 flex items-center justify-between px-6 md:px-10 transition-all duration-500 ${
-        isScrolled ? "h-16 bg-white/95 backdrop-blur-md shadow-sm" : "h-24 bg-transparent"
-      }`}
+      className="fixed top-0 left-0 right-0 z-50 flex items-center justify-between px-6 md:px-10 h-16"
+      style={{ backgroundColor: "transparent" }}
     >
       {/* Sol nav */}
       <ul className="hidden md:flex items-center gap-8">
         {NAV_LINKS.slice(0, 2).map((link) => (
           <li key={link.href}>
-            <Link href={link.href} className={linkClass}>
+            <Link
+              href={link.href}
+              className={isScrolledRef.current ? scrolledLinkClass : linkClass}
+            >
               {link.label}
             </Link>
           </li>
         ))}
       </ul>
 
-      {/* Merkez: Logo (kutu yok) */}
-      <Link href="/" className="absolute left-1/2 -translate-x-1/2 flex flex-col items-center gap-1 group">
-        <div
-          ref={logoWrapRef}
-          onMouseEnter={handleLogoEnter}
-          onMouseLeave={handleLogoLeave}
-          className="relative cursor-pointer overflow-hidden"
-          style={{ width: 110, height: 110 }}
-        >
-          <Image
-            src="/logo.jpg"
-            alt={SITE.marka}
-            fill
-            className="object-contain"
-            priority
-          />
-        </div>
-        <span
-          ref={logoTextRef}
-          className={`text-[10px] font-serif tracking-[0.2em] uppercase whitespace-nowrap transition-colors duration-300 ${
-            isScrolled ? "text-primary" : "text-white"
-          }`}
-        >
-          {SITE.marka.toLocaleUpperCase("tr-TR")}
-        </span>
-      </Link>
+      {/* Merkez: Kırmızı dikdörtgen logo kutusu */}
+      <div className="absolute left-1/2 top-0 -translate-x-1/2 z-10">
+        <Link href="/" aria-label={SITE.marka}>
+          <div
+            ref={boxRef}
+            onMouseEnter={handleEnter}
+            onMouseLeave={handleLeave}
+            className="bg-primary flex flex-col items-center overflow-hidden cursor-pointer shadow-xl"
+            style={{ width: FULL.w, height: FULL.h }}
+          >
+            {/* Logo görseli */}
+            <div className="relative shrink-0 mt-4" style={{ width: 80, height: 80 }}>
+              <Image
+                src="/logo.jpg"
+                alt={SITE.marka}
+                fill
+                className="object-contain"
+                priority
+              />
+            </div>
+
+            {/* Büyük isim yazısı */}
+            <div ref={textRef} className="mt-2 text-center leading-none">
+              <p className="text-white font-serif text-[26px] font-bold leading-tight">
+                Etlik
+              </p>
+              <p className="text-white font-serif text-[26px] font-bold leading-tight">
+                Yayla
+              </p>
+              <p className="text-white font-serif text-[26px] font-bold leading-tight">
+                Kasabı
+              </p>
+            </div>
+
+            {/* Erişilebilirlik için gizli tam isim */}
+            <span className="sr-only">{SITE.marka.toLocaleUpperCase("tr-TR")}</span>
+          </div>
+        </Link>
+      </div>
 
       {/* Sağ nav + CTA */}
       <div className="flex items-center gap-8">
         <ul className="hidden md:flex items-center gap-8">
           {NAV_LINKS.slice(2).map((link) => (
             <li key={link.href}>
-              <Link href={link.href} className={linkClass}>
+              <Link
+                href={link.href}
+                className={isScrolledRef.current ? scrolledLinkClass : linkClass}
+              >
                 {link.label}
               </Link>
             </li>
