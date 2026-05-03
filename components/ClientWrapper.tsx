@@ -9,13 +9,11 @@ export default function ClientWrapper({ children }: { children: React.ReactNode 
 
   return (
     <>
+      {/* Loader: overlay olarak her şeyin üstünde, z-9999 */}
       {!loaderDone && <Loader onComplete={() => setLoaderDone(true)} />}
-      <div
-        style={{
-          opacity: loaderDone ? 1 : 0,
-          transition: "opacity 0.5s ease",
-        }}
-      >
+
+      {/* Navbar her zaman DOM'da — loader arkasında kalır, sonunda açığa çıkar */}
+      <div style={{ pointerEvents: loaderDone ? "auto" : "none" }}>
         <Navbar />
         {children}
       </div>
