@@ -108,9 +108,79 @@ export const MUSTERI_GORSELLERI: MusteriGorseli[] = [
   { src: "/images/etlikyaylakasabi_1663510893_2930064202811506642_39180567620_1.jpg", alt: "Müşteri 25" },
 ];
 
+export const MUSTERI_YORUMLARI = [
+  {
+    isim: "Fatih Ç.",
+    sure: "1 yıl önce",
+    yorum: "Evime yakın olmamasına rağmen uzun süredir et ve et ürünlerini tercih ettiğim kasap. Özellikle temizliği ve çalışanlarının titizliği sebebiyle kendilerini tercih ediyorum. Yaz kış her türlü et ürününü bulabileceğiniz bir işletme. Daha bu güne kadar şunu da aldım ve memnun kalmadım diyeceğim bir alışverişim olmadı.",
+    puan: 5,
+  },
+  {
+    isim: "Salih Ünal",
+    sure: "5 ay önce",
+    yorum: "Etleri daima taze ve kaliteli. Çalışanlar işinin ehli. İstediğiniz türde etleri hazır olarak bulabilirsiniz. Ben özellikle kıyma, mangallık et konusunda Ankara'nın diğer ucunda olsam buraya gider alışverişimi yaparım. Bugüne kadar misafirlerime beni asla mahcup etmeyen bu mekanı kaliteli et arayanlara tavsiye ediyorum.",
+    puan: 5,
+  },
+  {
+    isim: "Kuzey Suhan",
+    sure: "4 ay önce",
+    yorum: "10 yıldır müşterileriyim. Bir gün kötü malzeme veya kötü davranış görmedim. 2 çocuğumu buranın etleriyle büyüttüm ve büyütüyorum. Aynen devam, ellerinize sağlık.",
+    puan: 5,
+  },
+  {
+    isim: "Fırat Özen",
+    sure: "9 ay önce",
+    yorum: "Kuyumcu vitrini gibi dizilmiş tertemiz ve en kaliteli etler sunuyorlar. Son derece makul fiyatlara ve muhteşem bir hizmet ile.",
+    puan: 5,
+  },
+  {
+    isim: "Ersoy Erdal",
+    sure: "1 yıl önce",
+    yorum: "Yok yok.. Aradığınız her şeyi hem çok taze hem çok güvenilir olarak bulabileceğiniz bir yer. Bırakın süslü püslü market reyonlarını ve bir uğrayın bence. Bir şey almadan çıkamazsınız zaten.",
+    puan: 5,
+  },
+  {
+    isim: "Ayşegül Esen Osso",
+    sure: "2 yıl önce",
+    yorum: "Bulunduğum bölgede zırh kıyması veya dolmalık kıyma hazırlayan kasap bulmak zor. Tavsiye üzerine gittim. Mekan temizdi, personeller güler yüzlüydü. Ayrıca Adana kebabını orijinal tarif ile hazırlamışlardı. Ürünlerinin lezzetini beğendim.",
+    puan: 5,
+  },
+  {
+    isim: "İrem Artaç",
+    sure: "1 yıl önce",
+    yorum: "Çok kaliteli ve temiz bir kasap; ailecek yıllardır oradan alışveriş yapıyoruz. Çalışanlar çok güler yüzlü ve ilgili. Herkese tavsiye ederim.",
+    puan: 5,
+  },
+  {
+    isim: "ExrockS",
+    sure: "1 yıl önce",
+    yorum: "Et konusunda gayet başarılılar; kaliteli, temiz ürünler, iyi bir dekora sahip dükkan. Kasap olma konusunda başarılı bir yer, çalışanları işini düzgün yapıyorlar.",
+    puan: 5,
+  },
+  {
+    isim: "Mustafa Altınbaş",
+    sure: "3 yıl önce",
+    yorum: "Etleri kaliteli, yumuşak ve taze. İstediğimiz ölçüde et veriyor, yağ katmıyor, bağ doku katmıyor. Kemikleri istediğimiz gibi küçük kırıyor. Fiyatlar makul.",
+    puan: 5,
+  },
+  {
+    isim: "Arda Acay",
+    sure: "4 yıl önce",
+    yorum: "Hizmet çok iyi, çalışanlar gayet güler yüzlü insanlar. Ayrıca etleri çok kaliteli; özellikle mangala gideceğiniz zaman etleri buradan almayı unutmayın. Köfte sevenler için gayet lezzetli köfteleri var.",
+    puan: 5,
+  },
+  {
+    isim: "Halis Dilmeç",
+    sure: "5 yıl önce",
+    yorum: "Yayla Kasap, her zaman güvenle et ve tavuk aldığım tek adres diyebilirim. Temiz ve hızlı hizmetin yanında müşteri ile ilişkiler samimiyet ve saygı sınırları içerisinde yürütülüyor.",
+    puan: 5,
+  },
+];
+
 export const NAV_LINKS = [
   { label: "Anasayfa", href: "/" },
-  { label: "Katalog", href: "/#katalog" },
+  { label: "Katalog", href: "/katalog" },
+  { label: "Et Rehberi", href: "/et-rehberi" },
   { label: "Hakkımızda", href: "/hakkimizda" },
   { label: "İletişim", href: "/iletisim" },
 ];

@@ -1,89 +1,137 @@
 "use client";
 
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
+import { usePathname } from "next/navigation";
 import Image from "next/image";
 import Link from "next/link";
 import gsap from "gsap";
 import { NAV_LINKS, SITE } from "@/lib/config";
 
-const FULL = { w: 140, h: 218 };
-const SMALL = { w: 72, h: 72 };
+const FULL  = { w: 146, h: 224, logo: 96, logoMt: 12 };
+const SMALL = { w: 72,  h: 72,  logo: 60, logoMt: 6  };
 
+/* ── Kayan-çizgi nav link ──────────────────────── */
+function NavLink({ href, label, scrolled }: { href: string; label: string; scrolled: boolean }) {
+  const wrapRef = useRef<HTMLAnchorElement>(null);
+  const lineRef = useRef<HTMLSpanElement>(null);
+
+  const onEnter = () => {
+    gsap.to(lineRef.current, { scaleX: 1, duration: 0.35, ease: "power3.out", overwrite: true });
+  };
+
+  const onLeave = () => {
+    gsap.to(lineRef.current, { scaleX: 0, duration: 0.25, ease: "power2.in", overwrite: true });
+  };
+
+  return (
+    <Link
+      ref={wrapRef}
+      href={href}
+      onMouseEnter={onEnter}
+      onMouseLeave={onLeave}
+      className="relative inline-flex flex-col items-center py-1 group"
+      style={{ fontFamily: "var(--font-josefin)" }}
+    >
+      <span
+        className={`font-light text-sm tracking-[0.22em] uppercase transition-colors duration-300 ${
+          scrolled ? "text-primary" : "text-white"
+        }`}
+        style={{ display: "inline-block" }}
+      >
+        {label}
+      </span>
+      {/* Kayan alt çizgi */}
+      <span
+        ref={lineRef}
+        className={`absolute bottom-0 left-0 w-full h-[1.5px] origin-left transition-colors duration-300 ${
+          scrolled ? "bg-primary" : "bg-white"
+        }`}
+        style={{ transform: "scaleX(0)" }}
+      />
+    </Link>
+  );
+}
+
+/* ── Ana bileşen ───────────────────────────────────────────── */
 export default function Navbar() {
-  const boxRef = useRef<HTMLDivElement>(null);
-  const textRef = useRef<HTMLDivElement>(null);
+  const boxRef       = useRef<HTMLDivElement>(null);
+  const logoRef      = useRef<HTMLDivElement>(null);
+  const textRef      = useRef<HTMLDivElement>(null);
+  const bgRef        = useRef<HTMLDivElement>(null);
   const isScrolledRef = useRef(false);
-  const isHoveredRef = useRef(false);
-  const navRef = useRef<HTMLElement>(null);
+  const isHoveredRef  = useRef(false);
+  const [scrolled, setScrolled] = useState(false);
+  const pathname = usePathname();
+  const isHome = pathname === "/";
+
+  // Diğer sayfalarda her zaman "scrolled" (kırmızı) modda olsun
+  const effectiveScrolled = !isHome || scrolled;
 
   const expand = () => {
-    gsap.to(boxRef.current, { width: FULL.w, height: FULL.h, duration: 0.5, ease: "power3.out" });
+    gsap.to(boxRef.current,  { width: FULL.w, height: FULL.h, duration: 0.5, ease: "power3.out" });
+    gsap.to(logoRef.current, { width: FULL.logo, height: FULL.logo, marginTop: FULL.logoMt, duration: 0.5, ease: "power3.out" });
     gsap.to(textRef.current, { opacity: 1, y: 0, duration: 0.4, delay: 0.18, ease: "power2.out" });
   };
 
   const collapse = () => {
-    gsap.to(boxRef.current, { width: SMALL.w, height: SMALL.h, duration: 0.45, ease: "power2.inOut" });
+    gsap.to(boxRef.current,  { width: SMALL.w, height: SMALL.h, duration: 0.45, ease: "power2.inOut" });
+    gsap.to(logoRef.current, { width: SMALL.logo, height: SMALL.logo, marginTop: SMALL.logoMt, duration: 0.45, ease: "power2.inOut" });
     gsap.to(textRef.current, { opacity: 0, y: 8, duration: 0.2, ease: "power2.in" });
   };
 
   useEffect(() => {
     const onScroll = () => {
-      const scrolled = window.scrollY > 80;
-      if (scrolled === isScrolledRef.current) return;
-      isScrolledRef.current = scrolled;
+      const y = window.scrollY;
 
-      if (navRef.current) {
-        gsap.to(navRef.current, {
-          backgroundColor: scrolled ? "rgba(255,255,255,0.95)" : "transparent",
-          backdropFilter: scrolled ? "blur(12px)" : "blur(0px)",
-          boxShadow: scrolled ? "0 1px 16px rgba(0,0,0,0.08)" : "none",
-          duration: 0.4,
-          ease: "power2.inOut",
-        });
-      }
+      // Blur arka planı: Ana sayfada scroll ile, diğer sayfalarda hep görünür
+      gsap.to(bgRef.current, {
+        opacity: (!isHome || y > 1) ? 1 : 0,
+        duration: 0.35,
+        ease: "power2.out",
+        overwrite: true,
+      });
 
+      // Link rengi için state güncelle
+      setScrolled(y > 1);
+
+      // Logo kutusu collapse/expand: 80px eşiği
+      const isScrolled = y > 80;
+      if (isScrolled === isScrolledRef.current) return;
+      isScrolledRef.current = isScrolled;
       if (!isHoveredRef.current) {
-        if (scrolled) collapse();
+        if (isScrolled) collapse();
         else expand();
       }
     };
-
     window.addEventListener("scroll", onScroll, { passive: true });
+    // Sayfa değiştiğinde arka plan durumunu güncelle
+    onScroll();
     return () => window.removeEventListener("scroll", onScroll);
-  }, []);
+  }, [isHome]);
 
-  const handleEnter = () => {
-    isHoveredRef.current = true;
-    if (isScrolledRef.current) expand();
-  };
-
-  const handleLeave = () => {
-    isHoveredRef.current = false;
-    if (isScrolledRef.current) collapse();
-  };
-
-  const linkClass =
-    "text-sm font-medium tracking-wider uppercase text-white hover:text-white/70 transition-colors duration-300";
-
-  const scrolledLinkClass =
-    "text-sm font-medium tracking-wider uppercase text-neutral-900 hover:text-primary transition-colors duration-300";
+  const handleEnter = () => { isHoveredRef.current = true;  if (isScrolledRef.current) expand();   };
+  const handleLeave = () => { isHoveredRef.current = false; if (isScrolledRef.current) collapse(); };
 
   return (
-    <nav
-      ref={navRef}
-      className="fixed top-0 left-0 right-0 z-50 flex items-center justify-between px-6 md:px-10 h-16"
-      style={{ backgroundColor: "transparent" }}
-    >
+    <nav className="fixed top-0 left-0 right-0 z-50 flex items-center justify-between px-6 md:px-10 h-16">
+      {/* Arka plan — scroll ile görünür */}
+      <div
+        ref={bgRef}
+        className="absolute inset-0 -z-10 pointer-events-none"
+        style={{
+          opacity: isHome ? 0 : 1,
+          backdropFilter: "blur(18px)",
+          WebkitBackdropFilter: "blur(18px)",
+          backgroundColor: "rgba(255, 255, 255, 0.88)",
+          borderBottom: "1px solid rgba(0,0,0,0.06)",
+        }}
+      />
+
       {/* Sol nav */}
       <ul className="hidden md:flex items-center gap-8">
         {NAV_LINKS.slice(0, 2).map((link) => (
           <li key={link.href}>
-            <Link
-              href={link.href}
-              className={isScrolledRef.current ? scrolledLinkClass : linkClass}
-            >
-              {link.label}
-            </Link>
+            <NavLink href={link.href} label={link.label} scrolled={effectiveScrolled} />
           </li>
         ))}
       </ul>
@@ -98,31 +146,28 @@ export default function Navbar() {
             className="bg-primary flex flex-col items-center overflow-hidden cursor-pointer shadow-xl"
             style={{ width: FULL.w, height: FULL.h, borderRadius: "0 0 10px 10px" }}
           >
-            {/* Logo görseli */}
-            <div className="relative shrink-0 mt-4" style={{ width: 80, height: 80 }}>
+            <div
+              ref={logoRef}
+              className="relative shrink-0"
+              style={{ width: FULL.logo, height: FULL.logo, marginTop: FULL.logoMt }}
+            >
               <Image
                 src="/logo.jpg"
                 alt={SITE.marka}
                 fill
                 className="object-contain"
                 priority
+                quality={100}
+                sizes="96px"
               />
             </div>
 
-            {/* Büyük isim yazısı */}
             <div ref={textRef} className="mt-2 text-center leading-none">
-              <p className="text-white font-serif text-[26px] font-bold leading-tight">
-                Etlik
-              </p>
-              <p className="text-white font-serif text-[26px] font-bold leading-tight">
-                Yayla
-              </p>
-              <p className="text-white font-serif text-[26px] font-bold leading-tight">
-                Kasabı
-              </p>
+              <p className="text-white font-serif text-[26px] font-bold leading-tight">Etlik</p>
+              <p className="text-white font-serif text-[26px] font-bold leading-tight">Yayla</p>
+              <p className="text-white font-serif text-[26px] font-bold leading-tight">Kasabı</p>
             </div>
 
-            {/* Erişilebilirlik için gizli tam isim */}
             <span className="sr-only">{SITE.marka.toLocaleUpperCase("tr-TR")}</span>
           </div>
         </Link>
@@ -132,15 +177,10 @@ export default function Navbar() {
       <div className="flex items-center gap-8">
         <ul className="hidden md:flex items-center gap-8">
           {NAV_LINKS.slice(2).map((link) => (
-            <li key={link.href}>
-              <Link
-                href={link.href}
-                className={isScrolledRef.current ? scrolledLinkClass : linkClass}
-              >
-                {link.label}
-              </Link>
-            </li>
-          ))}
+          <li key={link.href}>
+            <NavLink href={link.href} label={link.label} scrolled={effectiveScrolled} />
+          </li>
+        ))}
         </ul>
         <a
           href={SITE.ctaLink}
@@ -154,3 +194,4 @@ export default function Navbar() {
     </nav>
   );
 }
+

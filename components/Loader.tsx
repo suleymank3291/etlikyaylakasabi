@@ -5,7 +5,7 @@ import Image from "next/image";
 import gsap from "gsap";
 
 // Navbar.tsx ile senkronize tutulmalı
-const BOX = { w: 140, h: 218, logoSize: 84, logoMt: 16 };
+const BOX = { w: 146, h: 224, logoSize: 96, logoMt: 12 };
 
 interface LoaderProps {
   onComplete: () => void;
@@ -38,8 +38,8 @@ export default function Loader({ onComplete }: LoaderProps) {
 
     // Loader'daki başlangıç logo boyutu
     const LOGO_SIZE = isMobile
-      ? Math.min(240, vw * 0.55)
-      : Math.min(420, vw * 0.28);
+      ? Math.min(260, vw * 0.65)
+      : Math.min(480, vw * 0.32);
 
     logo.style.width = `${LOGO_SIZE}px`;
     logo.style.height = `${LOGO_SIZE}px`;
@@ -53,28 +53,26 @@ export default function Loader({ onComplete }: LoaderProps) {
     const insetLR = (vw - BOX.w) / 2;
     const insetBottom = vh - BOX.h;
 
-    const MOBILE_OFFSET = isMobile ? -0.5 : 0;
-
     const tl = gsap.timeline();
 
-    // FAZ 1: Logo fade-in (300ms gecikmeli, 400ms süre)
+    // FAZ 1: Logo fade-in + slight scale up
     tl.fromTo(
       logo,
-      { opacity: 0 },
-      { opacity: 1, duration: 0.4, ease: "power2.out" },
-      0.3
+      { opacity: 0, scale: 0.9 },
+      { opacity: 1, scale: 1, duration: 0.8, ease: "expo.out" },
+      0.4
     );
 
-    // FAZ 2: Logo küçülür + yukarı kayar
+    // FAZ 2: Logo küçülür + yukarı kayar (Bekleme süresi kısaltıldı)
     tl.to(
       logo,
       {
         scale: scaleTarget,
         y: deltaY,
-        duration: isMobile ? 1.0 : 1.3,
-        ease: "power2.inOut",
+        duration: 1.2,
+        ease: "expo.inOut",
       },
-      2.5 + MOBILE_OFFSET
+      1.8
     );
 
     // FAZ 3: Overlay clip-path ile kutu boyutuna daralır
@@ -82,20 +80,20 @@ export default function Loader({ onComplete }: LoaderProps) {
       overlay,
       {
         clipPath: `inset(0px ${insetLR}px ${insetBottom}px ${insetLR}px)`,
-        duration: isMobile ? 1.2 : 1.7,
-        ease: "power3.inOut",
+        duration: 1.4,
+        ease: "expo.inOut",
       },
-      isMobile ? 3.3 : 3.8
+      2.0
     );
 
     // FAZ 4: Overlay solar, navbar ortaya çıkar
-    const revealAt = isMobile ? 4.5 : 5.5;
-    tl.to(overlay, { opacity: 0, duration: 0.25, ease: "none" }, revealAt);
+    const revealAt = 3.2;
+    tl.to(overlay, { opacity: 0, duration: 0.4, ease: "power2.inOut" }, revealAt);
 
     tl.add(() => {
       document.body.style.overflow = "";
       onComplete();
-    }, revealAt + 0.25);
+    }, revealAt + 0.3);
 
     return () => {
       tl.kill();
@@ -125,6 +123,8 @@ export default function Loader({ onComplete }: LoaderProps) {
           fill
           className="object-contain"
           priority
+          quality={100}
+          sizes="(max-width: 768px) 65vw, 480px"
         />
       </div>
     </div>
