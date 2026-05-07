@@ -118,7 +118,7 @@ export default function Navbar() {
 
   return (
     <>
-      <nav className="fixed top-0 left-0 right-0 z-[60] flex items-center justify-between px-6 md:px-10 h-16 md:h-20">
+      <nav className="fixed top-0 left-0 right-0 z-[100] flex items-center justify-between px-5 h-16 md:h-24 md:px-10 transition-all duration-300">
         {/* Arka plan */}
         <div
           ref={bgRef}
@@ -127,24 +127,44 @@ export default function Navbar() {
             opacity: isHome ? 0 : 1,
             backdropFilter: "blur(18px)",
             WebkitBackdropFilter: "blur(18px)",
-            backgroundColor: "rgba(255, 255, 255, 0.88)",
-            borderBottom: "1px solid rgba(0,0,0,0.06)",
+            backgroundColor: "rgba(255, 255, 255, 0.92)",
+            borderBottom: "1px solid rgba(0,0,0,0.08)",
           }}
         />
 
-        {/* Hamburger (Mobil) */}
-        <button
-          onClick={toggleMenu}
-          className="md:hidden flex flex-col gap-1.5 z-50 p-2"
-          aria-label="Menü"
-        >
-          <span className={`w-6 h-0.5 transition-all ${effectiveScrolled ? 'bg-primary' : 'bg-white'} ${isMenuOpen ? 'rotate-45 translate-y-2' : ''}`} />
-          <span className={`w-6 h-0.5 transition-all ${effectiveScrolled ? 'bg-primary' : 'bg-white'} ${isMenuOpen ? 'opacity-0' : ''}`} />
-          <span className={`w-6 h-0.5 transition-all ${effectiveScrolled ? 'bg-primary' : 'bg-white'} ${isMenuOpen ? '-rotate-45 -translate-y-2' : ''}`} />
-        </button>
+        {/* SOL: Hamburger (Sadece Mobil) */}
+        <div className="flex md:hidden items-center z-[110]">
+          <button
+            onClick={toggleMenu}
+            className="flex flex-col gap-1.5 p-3 -ml-2"
+            aria-label="Menü"
+          >
+            <span 
+              className="w-7 h-0.5 transition-all duration-300" 
+              style={{ 
+                backgroundColor: isMenuOpen ? "#FFFFFF" : (effectiveScrolled ? "#BD2333" : "#FFFFFF"),
+                transform: isMenuOpen ? "rotate(45deg) translateY(8px)" : "none"
+              }} 
+            />
+            <span 
+              className="w-7 h-0.5 transition-all duration-300" 
+              style={{ 
+                backgroundColor: isMenuOpen ? "#FFFFFF" : (effectiveScrolled ? "#BD2333" : "#FFFFFF"),
+                opacity: isMenuOpen ? 0 : 1
+              }} 
+            />
+            <span 
+              className="w-7 h-0.5 transition-all duration-300" 
+              style={{ 
+                backgroundColor: isMenuOpen ? "#FFFFFF" : (effectiveScrolled ? "#BD2333" : "#FFFFFF"),
+                transform: isMenuOpen ? "rotate(-45deg) translateY(-8px)" : "none"
+              }} 
+            />
+          </button>
+        </div>
 
-        {/* Sol nav (Desktop) */}
-        <ul className="hidden md:flex items-center gap-8">
+        {/* SOL: Desktop Linkler */}
+        <ul className="hidden md:flex items-center gap-10">
           {NAV_LINKS.slice(0, 2).map((link) => (
             <li key={link.href}>
               <NavLink href={link.href} label={link.label} scrolled={effectiveScrolled} />
@@ -152,30 +172,27 @@ export default function Navbar() {
           ))}
         </ul>
 
-        {/* Merkez: Logo Kutusu */}
-        <div className="absolute left-1/2 top-0 -translate-x-1/2 z-10">
+        {/* MERKEZ: Logo Kutusu */}
+        <div className="absolute left-1/2 top-0 -translate-x-1/2 z-[105]">
           <Link href="/" aria-label={SITE.marka}>
             <div
               ref={boxRef}
               onMouseEnter={handleEnter}
               onMouseLeave={handleLeave}
-              className="bg-primary flex flex-col items-center overflow-hidden cursor-pointer shadow-xl transition-all duration-500"
+              className="bg-primary flex flex-col items-center overflow-hidden cursor-pointer shadow-2xl transition-all duration-500 ease-in-out"
               style={{ 
-                width: isScrolledRef.current ? SMALL.w : FULL.w, 
-                height: isScrolledRef.current ? SMALL.h : FULL.h,
-                borderRadius: "0 0 10px 10px",
-                // Mobilde her zaman küçük veya orta boyda tutalım
-                maxWidth: "100vw"
+                width: isScrolledRef.current ? SMALL.w : (window?.innerWidth < 768 ? 100 : FULL.w), 
+                height: isScrolledRef.current ? SMALL.h : (window?.innerWidth < 768 ? 160 : FULL.h),
+                borderRadius: "0 0 12px 12px",
               }}
             >
-              {/* Logo ve Metin içeriği aynı kalabilir, CSS/GSAP ile boyutlanıyor */}
               <div
                 ref={logoRef}
                 className="relative shrink-0 transition-all duration-500"
                 style={{ 
-                  width: isScrolledRef.current ? SMALL.logo : FULL.logo, 
-                  height: isScrolledRef.current ? SMALL.logo : FULL.logo, 
-                  marginTop: isScrolledRef.current ? SMALL.logoMt : FULL.logoMt 
+                  width: isScrolledRef.current ? SMALL.logo : (window?.innerWidth < 768 ? 70 : FULL.logo), 
+                  height: isScrolledRef.current ? SMALL.logo : (window?.innerWidth < 768 ? 70 : FULL.logo), 
+                  marginTop: isScrolledRef.current ? SMALL.logoMt : (window?.innerWidth < 768 ? 10 : FULL.logoMt) 
                 }}
               >
                 <Image
@@ -185,22 +202,25 @@ export default function Navbar() {
                   className="object-contain"
                   priority
                   quality={100}
-                  sizes="(max-width: 768px) 60px, 96px"
+                  sizes="120px"
                 />
               </div>
 
-              <div ref={textRef} className={`mt-2 text-center leading-none transition-all duration-500 ${isScrolledRef.current ? 'opacity-0 translate-y-2' : 'opacity-1'}`}>
-                <p className="text-white font-serif text-[22px] md:text-[26px] font-bold leading-tight">Etlik</p>
-                <p className="text-white font-serif text-[22px] md:text-[26px] font-bold leading-tight">Yayla</p>
-                <p className="text-white font-serif text-[22px] md:text-[26px] font-bold leading-tight">Kasabı</p>
+              <div 
+                ref={textRef} 
+                className={`mt-2 text-center leading-none transition-all duration-500 ${isScrolledRef.current ? 'opacity-0 scale-75' : 'opacity-1 scale-100'}`}
+              >
+                <p className="text-white font-serif text-[18px] md:text-[26px] font-bold leading-tight">Etlik</p>
+                <p className="text-white font-serif text-[18px] md:text-[26px] font-bold leading-tight">Yayla</p>
+                <p className="text-white font-serif text-[18px] md:text-[26px] font-bold leading-tight">Kasabı</p>
               </div>
             </div>
           </Link>
         </div>
 
-        {/* Sağ nav + CTA */}
-        <div className="flex items-center gap-4 md:gap-8">
-          <ul className="hidden md:flex items-center gap-8">
+        {/* SAĞ: Desktop Linkler + Mobil CTA */}
+        <div className="flex items-center gap-4 md:gap-10">
+          <ul className="hidden md:flex items-center gap-10">
             {NAV_LINKS.slice(2).map((link) => (
             <li key={link.href}>
               <NavLink href={link.href} label={link.label} scrolled={effectiveScrolled} />
@@ -211,24 +231,25 @@ export default function Navbar() {
             href={SITE.ctaLink}
             target="_blank"
             rel="noopener noreferrer"
-            className="px-4 md:px-5 py-2 bg-primary text-white text-[10px] md:text-sm font-bold tracking-wider uppercase rounded-full hover:bg-dark transition-all duration-300"
+            className="px-4 py-2 bg-primary text-white text-[10px] md:text-sm font-black tracking-widest uppercase rounded-full hover:bg-dark transition-all duration-300 shadow-lg active:scale-95"
           >
             {SITE.ctaMetin}
           </a>
         </div>
       </nav>
 
-      {/* Mobil Menü Overlay */}
+      {/* MOBİL MENÜ OVERLAY (Full Screen) */}
       <div 
-        className={`fixed inset-0 z-[55] bg-primary transition-transform duration-500 ease-in-out md:hidden ${isMenuOpen ? 'translate-x-0' : 'translate-x-full'}`}
+        className={`fixed inset-0 z-[90] bg-primary flex flex-col items-center justify-center transition-all duration-500 ease-expo ${isMenuOpen ? 'opacity-100 pointer-events-auto scale-100' : 'opacity-0 pointer-events-none scale-110'}`}
       >
-        <div className="flex flex-col items-center justify-center h-full gap-8">
-          {NAV_LINKS.map((link) => (
+        <div className="flex flex-col items-center gap-10">
+          {NAV_LINKS.map((link, i) => (
             <Link 
               key={link.href} 
               href={link.href}
               onClick={() => setIsMenuOpen(false)}
-              className="text-white text-3xl font-serif italic tracking-wide"
+              className="text-white text-4xl font-serif italic tracking-wider hover:text-white/70 transition-colors"
+              style={{ transitionDelay: `${i * 50}ms` }}
             >
               {link.label}
             </Link>
