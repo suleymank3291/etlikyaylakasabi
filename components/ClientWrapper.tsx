@@ -1,11 +1,20 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Loader from "@/components/Loader";
 import Navbar from "@/components/Navbar";
 
 export default function ClientWrapper({ children }: { children: React.ReactNode }) {
   const [loaderDone, setLoaderDone] = useState(false);
+
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      if ("scrollRestoration" in window.history) {
+        window.history.scrollRestoration = "manual";
+      }
+      window.scrollTo(0, 0);
+    }
+  }, []);
 
   return (
     <>
