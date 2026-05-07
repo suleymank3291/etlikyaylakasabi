@@ -1,6 +1,6 @@
 "use client";
 
-import { useLayoutEffect, useRef } from "react";
+import { useLayoutEffect, useRef, useState, useEffect } from "react";
 import Image from "next/image";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
@@ -11,30 +11,35 @@ import { GooeyText } from "@/components/ui/gooey-text-morphing";
  * kaynak projedeki parallax-images CSS'inden alınmıştır.
  * delta: mousemove parallax için GSAP duration (0.5=hızlı, 1=yavaş)
  */
-const IMAGES = [
+const IMAGES_BASE = [
   {
     src: "/images/etlikyaylakasabi_1629920256_2648285513519960057_39180567620_1.jpg",
     style: { top: "12%",    left: "9%",  width: "22.4vw", height: "59.3vh" },
+    mobileStyle: { top: "15%", left: "5%", width: "40vw", height: "30vh" },
     delta: 1,
   },
   {
     src: "/images/etlikyaylakasabi_1636185918_2700845699765988878_39180567620_1.jpg",
     style: { top: "1%",     left: "45%", width: "23.4vw", height: "29.6vh" },
+    mobileStyle: { top: "5%", left: "55%", width: "35vw", height: "20vh" },
     delta: 0.5,
   },
   {
     src: "/images/etlikyaylakasabi_1644649384_2771842393604421646_39180567620_1.jpg",
     style: { top: "-3%",    left: "76%", width: "20.8vw", height: "54.6vh" },
+    mobileStyle: { top: "50%", left: "60%", width: "38vw", height: "35vh" },
     delta: 0.75,
   },
   {
     src: "/images/etlikyaylakasabi_1661684832_2914746089249312712_39180567620_1.jpg",
     style: { bottom: "-5%", left: "36%", width: "20.1vw", height: "47.7vh" },
+    mobileStyle: { bottom: "5%", left: "10%", width: "45vw", height: "35vh" },
     delta: 1,
   },
   {
     src: "/images/etlikyaylakasabi_1663510893_2930064202811506642_39180567620_1.jpg",
     style: { bottom: "-1%", left: "72%", width: "15.6vw", height: "41.7vh" },
+    mobileStyle: { bottom: "15%", left: "65%", width: "30vw", height: "25vh" },
     delta: 1,
   },
 ];
@@ -44,6 +49,14 @@ export default function Katalog() {
   const galleryRef  = useRef<HTMLDivElement>(null);
   const wrapRefs    = useRef<(HTMLDivElement | null)[]>([]);
   const innerRefs   = useRef<(HTMLDivElement | null)[]>([]);
+  const [isMobile, setIsMobile] = useState(false);
+
+  useEffect(() => {
+    const check = () => setIsMobile(window.innerWidth < 768);
+    check();
+    window.addEventListener("resize", check);
+    return () => window.removeEventListener("resize", check);
+  }, []);
 
   useLayoutEffect(() => {
     gsap.registerPlugin(ScrollTrigger);
@@ -120,7 +133,7 @@ export default function Katalog() {
 
       const onMove = (e: MouseEvent) => {
         wraps.forEach((el, i) => {
-          parallaxIt(e, el, -50, IMAGES[i].delta);
+          parallaxIt(e, el, -50, IMAGES_BASE[i].delta);
         });
         inners.forEach((el) => {
           parallaxIt(e, el, -35, 0.5);
@@ -157,7 +170,7 @@ export default function Katalog() {
         id="katalog"
         ref={sectionRef}
         className="relative bg-white"
-        style={{ minHeight: "110vh" }}
+        style={{ minHeight: isMobile ? "80vh" : "110vh" }}
       >
         {/* Galeri — tam dolu, resimler absolute içinde */}
         <div
@@ -165,14 +178,14 @@ export default function Katalog() {
           className="absolute left-0 right-0 bottom-0 overflow-hidden"
           style={{ zIndex: 1, top: "5vh" }}
         >
-          {IMAGES.map((img, i) => (
+          {IMAGES_BASE.map((img, i) => (
             <div
               key={i}
               ref={(el) => { wrapRefs.current[i] = el; }}
               className="absolute overflow-hidden"
               style={{
-                ...img.style,
-                borderRadius: "0.52vw",
+                ...(isMobile ? img.mobileStyle : img.style),
+                borderRadius: isMobile ? "2vw" : "0.52vw",
                 // başlangıç: gizli (polygon tek nokta) — GSAP init'te set edilir
               }}
             >
@@ -186,8 +199,8 @@ export default function Katalog() {
                   alt=""
                   fill
                   className="object-cover"
-                  style={{ borderRadius: "0.52vw" }}
-                  sizes="25vw"
+                  style={{ borderRadius: isMobile ? "2vw" : "0.52vw" }}
+                  sizes={isMobile ? "50vw" : "25vw"}
                 />
               </div>
             </div>

@@ -60,6 +60,7 @@ export default function Navbar() {
   const bgRef        = useRef<HTMLDivElement>(null);
   const isScrolledRef = useRef(false);
   const isHoveredRef  = useRef(false);
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
   const pathname = usePathname();
   const isHome = pathname === "/";
@@ -67,13 +68,17 @@ export default function Navbar() {
   // Diğer sayfalarda her zaman "scrolled" (kırmızı) modda olsun
   const effectiveScrolled = !isHome || scrolled;
 
+  const toggleMenu = () => setIsMenuOpen(!isMenuOpen);
+
   const expand = () => {
+    if (window.innerWidth < 768) return; // mobilde animasyon yok
     gsap.to(boxRef.current,  { width: FULL.w, height: FULL.h, duration: 0.5, ease: "power3.out" });
     gsap.to(logoRef.current, { width: FULL.logo, height: FULL.logo, marginTop: FULL.logoMt, duration: 0.5, ease: "power3.out" });
     gsap.to(textRef.current, { opacity: 1, y: 0, duration: 0.4, delay: 0.18, ease: "power2.out" });
   };
 
   const collapse = () => {
+    if (window.innerWidth < 768) return; // mobilde zaten küçük
     gsap.to(boxRef.current,  { width: SMALL.w, height: SMALL.h, duration: 0.45, ease: "power2.inOut" });
     gsap.to(logoRef.current, { width: SMALL.logo, height: SMALL.logo, marginTop: SMALL.logoMt, duration: 0.45, ease: "power2.inOut" });
     gsap.to(textRef.current, { opacity: 0, y: 8, duration: 0.2, ease: "power2.in" });
@@ -104,94 +109,133 @@ export default function Navbar() {
       }
     };
     window.addEventListener("scroll", onScroll, { passive: true });
-    // Sayfa değiştiğinde arka plan durumunu güncelle
     onScroll();
     return () => window.removeEventListener("scroll", onScroll);
   }, [isHome]);
 
-  const handleEnter = () => { isHoveredRef.current = true;  if (isScrolledRef.current) expand();   };
-  const handleLeave = () => { isHoveredRef.current = false; if (isScrolledRef.current) collapse(); };
+  const handleEnter = () => { if (window.innerWidth >= 768) { isHoveredRef.current = true;  if (isScrolledRef.current) expand(); } };
+  const handleLeave = () => { if (window.innerWidth >= 768) { isHoveredRef.current = false; if (isScrolledRef.current) collapse(); } };
 
   return (
-    <nav className="fixed top-0 left-0 right-0 z-50 flex items-center justify-between px-6 md:px-10 h-16">
-      {/* Arka plan — scroll ile görünür */}
-      <div
-        ref={bgRef}
-        className="absolute inset-0 -z-10 pointer-events-none"
-        style={{
-          opacity: isHome ? 0 : 1,
-          backdropFilter: "blur(18px)",
-          WebkitBackdropFilter: "blur(18px)",
-          backgroundColor: "rgba(255, 255, 255, 0.88)",
-          borderBottom: "1px solid rgba(0,0,0,0.06)",
-        }}
-      />
+    <>
+      <nav className="fixed top-0 left-0 right-0 z-[60] flex items-center justify-between px-6 md:px-10 h-16 md:h-20">
+        {/* Arka plan */}
+        <div
+          ref={bgRef}
+          className="absolute inset-0 -z-10"
+          style={{
+            opacity: isHome ? 0 : 1,
+            backdropFilter: "blur(18px)",
+            WebkitBackdropFilter: "blur(18px)",
+            backgroundColor: "rgba(255, 255, 255, 0.88)",
+            borderBottom: "1px solid rgba(0,0,0,0.06)",
+          }}
+        />
 
-      {/* Sol nav */}
-      <ul className="hidden md:flex items-center gap-8">
-        {NAV_LINKS.slice(0, 2).map((link) => (
-          <li key={link.href}>
-            <NavLink href={link.href} label={link.label} scrolled={effectiveScrolled} />
-          </li>
-        ))}
-      </ul>
-
-      {/* Merkez: Kırmızı dikdörtgen logo kutusu */}
-      <div className="absolute left-1/2 top-0 -translate-x-1/2 z-10">
-        <Link href="/" aria-label={SITE.marka}>
-          <div
-            ref={boxRef}
-            onMouseEnter={handleEnter}
-            onMouseLeave={handleLeave}
-            className="bg-primary flex flex-col items-center overflow-hidden cursor-pointer shadow-xl"
-            style={{ width: FULL.w, height: FULL.h, borderRadius: "0 0 10px 10px" }}
-          >
-            <div
-              ref={logoRef}
-              className="relative shrink-0"
-              style={{ width: FULL.logo, height: FULL.logo, marginTop: FULL.logoMt }}
-            >
-              <Image
-                src="/logo.jpg"
-                alt={SITE.marka}
-                fill
-                className="object-contain"
-                priority
-                quality={100}
-                sizes="96px"
-              />
-            </div>
-
-            <div ref={textRef} className="mt-2 text-center leading-none">
-              <p className="text-white font-serif text-[26px] font-bold leading-tight">Etlik</p>
-              <p className="text-white font-serif text-[26px] font-bold leading-tight">Yayla</p>
-              <p className="text-white font-serif text-[26px] font-bold leading-tight">Kasabı</p>
-            </div>
-
-            <span className="sr-only">{SITE.marka.toLocaleUpperCase("tr-TR")}</span>
-          </div>
-        </Link>
-      </div>
-
-      {/* Sağ nav + CTA */}
-      <div className="flex items-center gap-8">
-        <ul className="hidden md:flex items-center gap-8">
-          {NAV_LINKS.slice(2).map((link) => (
-          <li key={link.href}>
-            <NavLink href={link.href} label={link.label} scrolled={effectiveScrolled} />
-          </li>
-        ))}
-        </ul>
-        <a
-          href={SITE.ctaLink}
-          target="_blank"
-          rel="noopener noreferrer"
-          className="px-5 py-2 bg-primary text-white text-xs md:text-sm font-medium tracking-wider uppercase rounded-full hover:bg-dark transition-colors duration-300"
+        {/* Hamburger (Mobil) */}
+        <button
+          onClick={toggleMenu}
+          className="md:hidden flex flex-col gap-1.5 z-50 p-2"
+          aria-label="Menü"
         >
-          {SITE.ctaMetin}
-        </a>
+          <span className={`w-6 h-0.5 transition-all ${effectiveScrolled ? 'bg-primary' : 'bg-white'} ${isMenuOpen ? 'rotate-45 translate-y-2' : ''}`} />
+          <span className={`w-6 h-0.5 transition-all ${effectiveScrolled ? 'bg-primary' : 'bg-white'} ${isMenuOpen ? 'opacity-0' : ''}`} />
+          <span className={`w-6 h-0.5 transition-all ${effectiveScrolled ? 'bg-primary' : 'bg-white'} ${isMenuOpen ? '-rotate-45 -translate-y-2' : ''}`} />
+        </button>
+
+        {/* Sol nav (Desktop) */}
+        <ul className="hidden md:flex items-center gap-8">
+          {NAV_LINKS.slice(0, 2).map((link) => (
+            <li key={link.href}>
+              <NavLink href={link.href} label={link.label} scrolled={effectiveScrolled} />
+            </li>
+          ))}
+        </ul>
+
+        {/* Merkez: Logo Kutusu */}
+        <div className="absolute left-1/2 top-0 -translate-x-1/2 z-10">
+          <Link href="/" aria-label={SITE.marka}>
+            <div
+              ref={boxRef}
+              onMouseEnter={handleEnter}
+              onMouseLeave={handleLeave}
+              className="bg-primary flex flex-col items-center overflow-hidden cursor-pointer shadow-xl transition-all duration-500"
+              style={{ 
+                width: isScrolledRef.current ? SMALL.w : FULL.w, 
+                height: isScrolledRef.current ? SMALL.h : FULL.h,
+                borderRadius: "0 0 10px 10px",
+                // Mobilde her zaman küçük veya orta boyda tutalım
+                maxWidth: "100vw"
+              }}
+            >
+              {/* Logo ve Metin içeriği aynı kalabilir, CSS/GSAP ile boyutlanıyor */}
+              <div
+                ref={logoRef}
+                className="relative shrink-0 transition-all duration-500"
+                style={{ 
+                  width: isScrolledRef.current ? SMALL.logo : FULL.logo, 
+                  height: isScrolledRef.current ? SMALL.logo : FULL.logo, 
+                  marginTop: isScrolledRef.current ? SMALL.logoMt : FULL.logoMt 
+                }}
+              >
+                <Image
+                  src="/logo.jpg"
+                  alt={SITE.marka}
+                  fill
+                  className="object-contain"
+                  priority
+                  quality={100}
+                  sizes="(max-width: 768px) 60px, 96px"
+                />
+              </div>
+
+              <div ref={textRef} className={`mt-2 text-center leading-none transition-all duration-500 ${isScrolledRef.current ? 'opacity-0 translate-y-2' : 'opacity-1'}`}>
+                <p className="text-white font-serif text-[22px] md:text-[26px] font-bold leading-tight">Etlik</p>
+                <p className="text-white font-serif text-[22px] md:text-[26px] font-bold leading-tight">Yayla</p>
+                <p className="text-white font-serif text-[22px] md:text-[26px] font-bold leading-tight">Kasabı</p>
+              </div>
+            </div>
+          </Link>
+        </div>
+
+        {/* Sağ nav + CTA */}
+        <div className="flex items-center gap-4 md:gap-8">
+          <ul className="hidden md:flex items-center gap-8">
+            {NAV_LINKS.slice(2).map((link) => (
+            <li key={link.href}>
+              <NavLink href={link.href} label={link.label} scrolled={effectiveScrolled} />
+            </li>
+          ))}
+          </ul>
+          <a
+            href={SITE.ctaLink}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="px-4 md:px-5 py-2 bg-primary text-white text-[10px] md:text-sm font-bold tracking-wider uppercase rounded-full hover:bg-dark transition-all duration-300"
+          >
+            {SITE.ctaMetin}
+          </a>
+        </div>
+      </nav>
+
+      {/* Mobil Menü Overlay */}
+      <div 
+        className={`fixed inset-0 z-[55] bg-primary transition-transform duration-500 ease-in-out md:hidden ${isMenuOpen ? 'translate-x-0' : 'translate-x-full'}`}
+      >
+        <div className="flex flex-col items-center justify-center h-full gap-8">
+          {NAV_LINKS.map((link) => (
+            <Link 
+              key={link.href} 
+              href={link.href}
+              onClick={() => setIsMenuOpen(false)}
+              className="text-white text-3xl font-serif italic tracking-wide"
+            >
+              {link.label}
+            </Link>
+          ))}
+        </div>
       </div>
-    </nav>
+    </>
   );
 }
 

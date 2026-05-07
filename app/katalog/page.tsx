@@ -336,7 +336,7 @@ export default function KatalogSayfasi() {
   }, []);
 
   return (
-    <main style={{ backgroundColor: "#F5F0E8", paddingTop: 240 }}>
+    <main className="pt-[140px] md:pt-[240px]" style={{ backgroundColor: "#F5F0E8" }}>
 
       {/* ── KATEGORİ NAVİGASYONU ─────────────────────── */}
       <div

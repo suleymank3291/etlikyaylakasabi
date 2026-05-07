@@ -256,7 +256,7 @@ export default function EtRehberi() {
       {/* Başlık */}
       <div className="w-full max-w-[1800px] px-2 md:px-4 text-left">
         <h1
-          className="font-serif text-5xl md:text-6xl font-bold mb-2 tracking-tight"
+          className="font-serif text-4xl md:text-6xl font-bold mb-2 tracking-tight"
           style={{ color: "#BD2333" }}
         >
           Et Rehberi

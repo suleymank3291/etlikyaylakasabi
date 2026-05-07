@@ -17,20 +17,32 @@ const VIDEOLAR = [
 
 const N        = VIDEOLAR.length;           // 9
 const ITEMS    = [...VIDEOLAR, ...VIDEOLAR, ...VIDEOLAR]; // 27
-const SIDE_W   = 220;
-const SIDE_H   = 380;
-const ACTIVE_W = 300;
-const ACTIVE_H = 500;
-const GAP      = 20;
-const STEP     = SIDE_W + GAP;             // 240 — her item eşit aralıkta hesap için
-// Aktif itemın sol kenarı = aktif * STEP
-// Merkezi = aktif * STEP + ACTIVE_W / 2 = aktif * STEP + 150
-// Bunu 50% hizalamak için: margin-left = 50% - (aktif * STEP + 150)
+// Sabitler (Desktop değerleri)
+const SIDE_W_BASE   = 220;
+const SIDE_H_BASE   = 380;
+const ACTIVE_W_BASE = 300;
+const ACTIVE_H_BASE = 500;
+const GAP           = 20;
 
 const EASE = "cubic-bezier(0.22,1,0.36,1)";
 const DUR  = "0.65s";
 
 export default function OneCikanlar() {
+  const [isMobile, setIsMobile] = useState(false);
+
+  useEffect(() => {
+    const check = () => setIsMobile(window.innerWidth < 768);
+    check();
+    window.addEventListener("resize", check);
+    return () => window.removeEventListener("resize", check);
+  }, []);
+
+  const SIDE_W   = isMobile ? 140 : SIDE_W_BASE;
+  const SIDE_H   = isMobile ? 240 : SIDE_H_BASE;
+  const ACTIVE_W = isMobile ? 200 : ACTIVE_W_BASE;
+  const ACTIVE_H = isMobile ? 340 : ACTIVE_H_BASE;
+  const STEP     = SIDE_W + GAP;
+
   const [aktif, setAktif]   = useState(N);       // orta setten başla
   const [canAnim, setCanAnim] = useState(true);  // false = anlık jump
   const videoRefs  = useRef<(HTMLVideoElement | null)[]>([]);
@@ -94,21 +106,7 @@ export default function OneCikanlar() {
     <section className="relative w-full py-20 md:py-28" style={{ backgroundColor: "#BD2333" }}>
 
       {/* Başlık */}
-      <div className="text-center mb-12 px-6 flex flex-col items-center">
-        <a 
-          href="https://www.instagram.com/etlikyaylakasabi/" 
-          target="_blank" 
-          rel="noopener noreferrer"
-          className="group flex flex-col items-center mb-6"
-        >
-          <span className="text-[10px] tracking-[0.3em] uppercase text-white/40 mb-1 group-hover:text-white/60 transition-colors">
-            bizi instagramdan takip edin
-          </span>
-          <span className="font-serif text-lg text-white/90 group-hover:text-white transition-colors border-b border-white/20 pb-0.5">
-            @etlikyaylakasabi
-          </span>
-        </a>
-
+      <div className="text-center mb-12 px-6">
         <p className="text-xs tracking-[0.2em] uppercase mb-3" style={{ color: "rgba(255,255,255,0.5)" }}>
           Mutfaktan Sofraya
         </p>
@@ -127,6 +125,18 @@ export default function OneCikanlar() {
         style={{
           overflow: "hidden",
           height: ACTIVE_H + 80, // video + yazı alanı — sabit
+        }}
+        onTouchStart={(e) => {
+          const touch = e.touches[0];
+          (window as any)._touchX = touch.clientX;
+        }}
+        onTouchEnd={(e) => {
+          const touch = e.changedTouches[0];
+          const deltaX = (window as any)._touchX - touch.clientX;
+          if (Math.abs(deltaX) > 50) {
+            if (deltaX > 0) goTo(aktif + 1);
+            else goTo(aktif - 1);
+          }
         }}
       >
         <div
