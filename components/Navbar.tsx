@@ -181,8 +181,8 @@ export default function Navbar() {
               onMouseLeave={handleLeave}
               className="bg-primary flex flex-col items-center overflow-hidden cursor-pointer shadow-2xl transition-all duration-500 ease-in-out"
               style={{ 
-                width: isScrolledRef.current ? SMALL.w : (window?.innerWidth < 768 ? 100 : FULL.w), 
-                height: isScrolledRef.current ? SMALL.h : (window?.innerWidth < 768 ? 160 : FULL.h),
+                width: scrolled ? SMALL.w : (isMenuOpen ? SMALL.w : (window?.innerWidth < 768 ? 110 : FULL.w)), 
+                height: scrolled ? SMALL.h : (isMenuOpen ? SMALL.h : (window?.innerWidth < 768 ? 180 : FULL.h)),
                 borderRadius: "0 0 12px 12px",
               }}
             >
@@ -190,9 +190,9 @@ export default function Navbar() {
                 ref={logoRef}
                 className="relative shrink-0 transition-all duration-500"
                 style={{ 
-                  width: isScrolledRef.current ? SMALL.logo : (window?.innerWidth < 768 ? 70 : FULL.logo), 
-                  height: isScrolledRef.current ? SMALL.logo : (window?.innerWidth < 768 ? 70 : FULL.logo), 
-                  marginTop: isScrolledRef.current ? SMALL.logoMt : (window?.innerWidth < 768 ? 10 : FULL.logoMt) 
+                  width: scrolled ? SMALL.logo : (window?.innerWidth < 768 ? 76 : FULL.logo), 
+                  height: scrolled ? SMALL.logo : (window?.innerWidth < 768 ? 76 : FULL.logo), 
+                  marginTop: scrolled ? SMALL.logoMt : (window?.innerWidth < 768 ? 14 : FULL.logoMt) 
                 }}
               >
                 <Image
@@ -208,11 +208,11 @@ export default function Navbar() {
 
               <div 
                 ref={textRef} 
-                className={`mt-2 text-center leading-none transition-all duration-500 ${isScrolledRef.current ? 'opacity-0 scale-75' : 'opacity-1 scale-100'}`}
+                className={`mt-2 text-center leading-none transition-all duration-500 ${scrolled || isMenuOpen ? 'opacity-0 scale-75' : 'opacity-1 scale-100'}`}
               >
-                <p className="text-white font-serif text-[18px] md:text-[26px] font-bold leading-tight">Etlik</p>
-                <p className="text-white font-serif text-[18px] md:text-[26px] font-bold leading-tight">Yayla</p>
-                <p className="text-white font-serif text-[18px] md:text-[26px] font-bold leading-tight">Kasabı</p>
+                <p className="text-white font-serif text-[20px] md:text-[26px] font-bold leading-tight">Etlik</p>
+                <p className="text-white font-serif text-[20px] md:text-[26px] font-bold leading-tight">Yayla</p>
+                <p className="text-white font-serif text-[20px] md:text-[26px] font-bold leading-tight">Kasabı</p>
               </div>
             </div>
           </Link>
