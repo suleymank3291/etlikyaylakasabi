@@ -71,10 +71,10 @@ export default function Navbar() {
   const toggleMenu = () => setIsMenuOpen(!isMenuOpen);
 
   const expand = () => {
-    if (window.innerWidth < 768) return; // mobilde animasyon yok
+    if (typeof window !== "undefined" && window.innerWidth < 768) return;
     gsap.to(boxRef.current,  { width: FULL.w, height: FULL.h, duration: 0.5, ease: "power3.out" });
     gsap.to(logoRef.current, { width: FULL.logo, height: FULL.logo, marginTop: FULL.logoMt, duration: 0.5, ease: "power3.out" });
-    gsap.to(textRef.current, { opacity: 1, y: 0, duration: 0.4, delay: 0.18, ease: "power2.out" });
+    gsap.to(textRef.current, { opacity: 1, y: 0, duration: 0.4, delay: 0.15, ease: "power2.out" });
   };
 
   const collapse = () => {
@@ -121,13 +121,9 @@ export default function Navbar() {
     onScroll();
     return () => window.removeEventListener("scroll", onScroll);
   }, [isHome]);
+  const handleEnter = () => { if (typeof window !== "undefined" && window.innerWidth >= 768) { isHoveredRef.current = true;  if (isScrolledRef.current) expand(); } };
+  const handleLeave = () => { if (typeof window !== "undefined" && window.innerWidth >= 768) { isHoveredRef.current = false; if (isScrolledRef.current) collapse(); } };
 
-  // Logo Kutusu için dinamik değerler
-  const boxWidth  = scrolled ? SMALL.w : (isMenuOpen ? SMALL.w : (isMobile ? 110 : FULL.w));
-  const boxHeight = scrolled ? SMALL.h : (isMenuOpen ? SMALL.h : (isMobile ? 170 : FULL.h));
-  
-  const logoSize = scrolled ? SMALL.logo : (isMobile ? 70 : FULL.logo);
-  const logoMt   = scrolled ? SMALL.logoMt : (isMobile ? 12 : FULL.logoMt);
 
   return (
     <>
@@ -189,19 +185,23 @@ export default function Navbar() {
         <div className="absolute left-1/2 top-0 -translate-x-1/2 z-[105]">
           <Link href="/" aria-label={SITE.marka}>
             <div
-              className="bg-primary flex flex-col items-center overflow-hidden cursor-pointer shadow-2xl transition-all duration-500 ease-in-out"
+              ref={boxRef}
+              onMouseEnter={handleEnter}
+              onMouseLeave={handleLeave}
+              className={`bg-primary flex flex-col items-center overflow-hidden cursor-pointer shadow-2xl ${isMobile ? 'transition-all duration-500' : ''}`}
               style={{ 
-                width: boxWidth, 
-                height: boxHeight,
+                width: isMobile ? (scrolled ? SMALL.w : 110) : FULL.w, 
+                height: isMobile ? (scrolled ? SMALL.h : 170) : FULL.h,
                 borderRadius: "0 0 12px 12px",
               }}
             >
               <div
-                className="relative shrink-0 transition-all duration-500"
+                ref={logoRef}
+                className={`relative shrink-0 ${isMobile ? 'transition-all duration-500' : ''}`}
                 style={{ 
-                  width: logoSize, 
-                  height: logoSize, 
-                  marginTop: logoMt 
+                  width: isMobile ? (scrolled ? SMALL.logo : 70) : FULL.logo, 
+                  height: isMobile ? (scrolled ? SMALL.logo : 70) : FULL.logo, 
+                  marginTop: isMobile ? (scrolled ? SMALL.logoMt : 12) : FULL.logoMt,
                 }}
               >
                 <Image
@@ -216,7 +216,12 @@ export default function Navbar() {
               </div>
 
               <div 
-                className={`mt-2 text-center leading-none transition-all duration-500 ${scrolled || isMenuOpen ? 'opacity-0 translate-y-4 scale-75' : 'opacity-1 translate-y-0 scale-100'}`}
+                ref={textRef} 
+                className={`mt-2 text-center leading-none ${isMobile ? 'transition-all duration-500' : ''}`}
+                style={{
+                  opacity: isMobile && (scrolled || isMenuOpen) ? 0 : 1,
+                  transform: isMobile && (scrolled || isMenuOpen) ? 'translateY(1rem) scale(0.75)' : 'translateY(0) scale(1)',
+                }}
               >
                 <p className="text-white font-serif text-[18px] md:text-[24px] font-bold leading-tight">Etlik</p>
                 <p className="text-white font-serif text-[18px] md:text-[24px] font-bold leading-tight">Yayla</p>
