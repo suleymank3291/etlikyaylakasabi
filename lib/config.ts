@@ -12,6 +12,7 @@ export const SITE = {
   googleMapsLink: "https://maps.app.goo.gl/WZsE7EFuYxmFqpSq8",
   googleMapsEmbed:
     "https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d12228.24482963435!2d32.81730701973721!3d39.98473748738348!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x14d34c14dac052bf%3A0x7746d7fa8f43dea8!2sEtlik%20Yayla%20Kasab%C4%B1!5e0!3m2!1str!2str!4v1777739784745!5m2!1str!2str",
+  instagram: "https://www.instagram.com/etlikyaylakasabi",
 };
 
 export const HERO = {

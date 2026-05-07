@@ -2,6 +2,7 @@
 
 import { useEffect, useRef, useState, useCallback } from "react";
 import { motion, AnimatePresence } from "framer-motion";
+import { SITE } from "@/lib/config";
 
 const VIDEOLAR = [
   { src: "/media/etlikyaylakasabi_1776076291_3874330842868928823_39180567620_1.mp4",  yazi: "Et, ustalığın ve titizliğin buluştuğu noktada hazırlanır." },
@@ -107,6 +108,20 @@ export default function OneCikanlar() {
 
       {/* Başlık */}
       <div className="text-center mb-12 px-6">
+        <a 
+          href={SITE.instagram} 
+          target="_blank" 
+          rel="noopener noreferrer"
+          className="group flex flex-col items-center gap-1 mb-8"
+        >
+          <span className="text-white/60 text-[10px] font-black tracking-[0.3em] uppercase group-hover:text-white transition-colors">
+            Bizi Instagram'dan Takip Edin
+          </span>
+          <span className="text-white font-serif italic text-xl md:text-2xl group-hover:scale-105 transition-transform">
+            @etlikyaylakasabi
+          </span>
+        </a>
+
         <p className="text-xs tracking-[0.2em] uppercase mb-3" style={{ color: "rgba(255,255,255,0.5)" }}>
           Mutfaktan Sofraya
         </p>
