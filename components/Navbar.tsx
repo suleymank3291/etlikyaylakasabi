@@ -78,11 +78,20 @@ export default function Navbar() {
   };
 
   const collapse = () => {
-    if (window.innerWidth < 768) return; // mobilde zaten küçük
+    if (typeof window !== "undefined" && window.innerWidth < 768) return;
     gsap.to(boxRef.current,  { width: SMALL.w, height: SMALL.h, duration: 0.45, ease: "power2.inOut" });
     gsap.to(logoRef.current, { width: SMALL.logo, height: SMALL.logo, marginTop: SMALL.logoMt, duration: 0.45, ease: "power2.inOut" });
     gsap.to(textRef.current, { opacity: 0, y: 8, duration: 0.2, ease: "power2.in" });
   };
+
+  const [isMobile, setIsMobile] = useState(false);
+
+  useEffect(() => {
+    const check = () => setIsMobile(window.innerWidth < 768);
+    check();
+    window.addEventListener("resize", check);
+    return () => window.removeEventListener("resize", check);
+  }, []);
 
   useEffect(() => {
     const onScroll = () => {
@@ -113,8 +122,8 @@ export default function Navbar() {
     return () => window.removeEventListener("scroll", onScroll);
   }, [isHome]);
 
-  const handleEnter = () => { if (window.innerWidth >= 768) { isHoveredRef.current = true;  if (isScrolledRef.current) expand(); } };
-  const handleLeave = () => { if (window.innerWidth >= 768) { isHoveredRef.current = false; if (isScrolledRef.current) collapse(); } };
+  const handleEnter = () => { if (typeof window !== "undefined" && window.innerWidth >= 768) { isHoveredRef.current = true;  if (isScrolledRef.current) expand(); } };
+  const handleLeave = () => { if (typeof window !== "undefined" && window.innerWidth >= 768) { isHoveredRef.current = false; if (isScrolledRef.current) collapse(); } };
 
   return (
     <>
@@ -181,8 +190,8 @@ export default function Navbar() {
               onMouseLeave={handleLeave}
               className="bg-primary flex flex-col items-center overflow-hidden cursor-pointer shadow-2xl transition-all duration-500 ease-in-out"
               style={{ 
-                width: scrolled ? SMALL.w : (isMenuOpen ? SMALL.w : (window?.innerWidth < 768 ? 110 : FULL.w)), 
-                height: scrolled ? SMALL.h : (isMenuOpen ? SMALL.h : (window?.innerWidth < 768 ? 180 : FULL.h)),
+                width: scrolled ? SMALL.w : (isMenuOpen ? SMALL.w : (isMobile ? 110 : FULL.w)), 
+                height: scrolled ? SMALL.h : (isMenuOpen ? SMALL.h : (isMobile ? 180 : FULL.h)),
                 borderRadius: "0 0 12px 12px",
               }}
             >
@@ -190,9 +199,9 @@ export default function Navbar() {
                 ref={logoRef}
                 className="relative shrink-0 transition-all duration-500"
                 style={{ 
-                  width: scrolled ? SMALL.logo : (window?.innerWidth < 768 ? 76 : FULL.logo), 
-                  height: scrolled ? SMALL.logo : (window?.innerWidth < 768 ? 76 : FULL.logo), 
-                  marginTop: scrolled ? SMALL.logoMt : (window?.innerWidth < 768 ? 14 : FULL.logoMt) 
+                  width: scrolled ? SMALL.logo : (isMobile ? 76 : FULL.logo), 
+                  height: scrolled ? SMALL.logo : (isMobile ? 76 : FULL.logo), 
+                  marginTop: scrolled ? SMALL.logoMt : (isMobile ? 14 : FULL.logoMt) 
                 }}
               >
                 <Image
