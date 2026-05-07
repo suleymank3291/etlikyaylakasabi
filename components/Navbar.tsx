@@ -122,8 +122,12 @@ export default function Navbar() {
     return () => window.removeEventListener("scroll", onScroll);
   }, [isHome]);
 
-  const handleEnter = () => { if (typeof window !== "undefined" && window.innerWidth >= 768) { isHoveredRef.current = true;  if (isScrolledRef.current) expand(); } };
-  const handleLeave = () => { if (typeof window !== "undefined" && window.innerWidth >= 768) { isHoveredRef.current = false; if (isScrolledRef.current) collapse(); } };
+  // Logo Kutusu için dinamik değerler
+  const boxWidth  = scrolled ? SMALL.w : (isMenuOpen ? SMALL.w : (isMobile ? 110 : FULL.w));
+  const boxHeight = scrolled ? SMALL.h : (isMenuOpen ? SMALL.h : (isMobile ? 170 : FULL.h));
+  
+  const logoSize = scrolled ? SMALL.logo : (isMobile ? 70 : FULL.logo);
+  const logoMt   = scrolled ? SMALL.logoMt : (isMobile ? 12 : FULL.logoMt);
 
   return (
     <>
@@ -185,23 +189,19 @@ export default function Navbar() {
         <div className="absolute left-1/2 top-0 -translate-x-1/2 z-[105]">
           <Link href="/" aria-label={SITE.marka}>
             <div
-              ref={boxRef}
-              onMouseEnter={handleEnter}
-              onMouseLeave={handleLeave}
               className="bg-primary flex flex-col items-center overflow-hidden cursor-pointer shadow-2xl transition-all duration-500 ease-in-out"
               style={{ 
-                width: scrolled ? SMALL.w : (isMenuOpen ? SMALL.w : (isMobile ? 110 : FULL.w)), 
-                height: scrolled ? SMALL.h : (isMenuOpen ? SMALL.h : (isMobile ? 180 : FULL.h)),
+                width: boxWidth, 
+                height: boxHeight,
                 borderRadius: "0 0 12px 12px",
               }}
             >
               <div
-                ref={logoRef}
                 className="relative shrink-0 transition-all duration-500"
                 style={{ 
-                  width: scrolled ? SMALL.logo : (isMobile ? 76 : FULL.logo), 
-                  height: scrolled ? SMALL.logo : (isMobile ? 76 : FULL.logo), 
-                  marginTop: scrolled ? SMALL.logoMt : (isMobile ? 14 : FULL.logoMt) 
+                  width: logoSize, 
+                  height: logoSize, 
+                  marginTop: logoMt 
                 }}
               >
                 <Image
@@ -216,12 +216,11 @@ export default function Navbar() {
               </div>
 
               <div 
-                ref={textRef} 
-                className={`mt-2 text-center leading-none transition-all duration-500 ${scrolled || isMenuOpen ? 'opacity-0 scale-75' : 'opacity-1 scale-100'}`}
+                className={`mt-2 text-center leading-none transition-all duration-500 ${scrolled || isMenuOpen ? 'opacity-0 translate-y-4 scale-75' : 'opacity-1 translate-y-0 scale-100'}`}
               >
-                <p className="text-white font-serif text-[20px] md:text-[26px] font-bold leading-tight">Etlik</p>
-                <p className="text-white font-serif text-[20px] md:text-[26px] font-bold leading-tight">Yayla</p>
-                <p className="text-white font-serif text-[20px] md:text-[26px] font-bold leading-tight">Kasabı</p>
+                <p className="text-white font-serif text-[18px] md:text-[24px] font-bold leading-tight">Etlik</p>
+                <p className="text-white font-serif text-[18px] md:text-[24px] font-bold leading-tight">Yayla</p>
+                <p className="text-white font-serif text-[18px] md:text-[24px] font-bold leading-tight">Kasabı</p>
               </div>
             </div>
           </Link>
