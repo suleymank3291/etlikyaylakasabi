@@ -94,7 +94,21 @@ export default function OneCikanlar() {
     <section className="relative w-full py-20 md:py-28" style={{ backgroundColor: "#BD2333" }}>
 
       {/* Başlık */}
-      <div className="text-center mb-12 px-6">
+      <div className="text-center mb-12 px-6 flex flex-col items-center">
+        <a 
+          href="https://www.instagram.com/etlikyaylakasabi/" 
+          target="_blank" 
+          rel="noopener noreferrer"
+          className="group flex flex-col items-center mb-6"
+        >
+          <span className="text-[10px] tracking-[0.3em] uppercase text-white/40 mb-1 group-hover:text-white/60 transition-colors">
+            bizi instagramdan takip edin
+          </span>
+          <span className="font-serif text-lg text-white/90 group-hover:text-white transition-colors border-b border-white/20 pb-0.5">
+            @etlikyaylakasabi
+          </span>
+        </a>
+
         <p className="text-xs tracking-[0.2em] uppercase mb-3" style={{ color: "rgba(255,255,255,0.5)" }}>
           Mutfaktan Sofraya
         </p>
