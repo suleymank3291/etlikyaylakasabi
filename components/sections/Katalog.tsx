@@ -49,6 +49,7 @@ export default function Katalog() {
   const galleryRef  = useRef<HTMLDivElement>(null);
   const wrapRefs    = useRef<(HTMLDivElement | null)[]>([]);
   const innerRefs   = useRef<(HTMLDivElement | null)[]>([]);
+  const cursorRef  = useRef<HTMLDivElement>(null);
   const [isMobile, setIsMobile] = useState(false);
 
   useEffect(() => {
@@ -166,60 +167,107 @@ export default function Katalog() {
 
   return (
     <>
+      {/* Özel imleç (Sadece Desktop) */}
+      {!isMobile && (
+        <div
+          ref={cursorRef}
+          className="fixed top-0 left-0 z-[200] w-20 h-20 rounded-full bg-primary pointer-events-none flex items-center justify-center"
+          style={{ opacity: 0, transform: "scale(0)", willChange: "transform" }}
+        >
+          <span className="text-white text-[10px] font-bold tracking-widest uppercase">Keşfet</span>
+        </div>
+      )}
+
       <section
         id="katalog"
         ref={sectionRef}
-        className="relative bg-white"
-        style={{ minHeight: isMobile ? "80vh" : "110vh" }}
+        className={`relative bg-white ${isMobile ? "py-20" : "min-h-[110vh]"}`}
       >
-        {/* Galeri — tam dolu, resimler absolute içinde */}
-        <div
-          ref={galleryRef}
-          className="absolute left-0 right-0 bottom-0 overflow-hidden"
-          style={{ zIndex: 1, top: "5vh" }}
-        >
-          {IMAGES_BASE.map((img, i) => (
-            <div
-              key={i}
-              ref={(el) => { wrapRefs.current[i] = el; }}
-              className="absolute overflow-hidden"
-              style={{
-                ...(isMobile ? img.mobileStyle : img.style),
-                borderRadius: isMobile ? "2vw" : "0.52vw",
-                // başlangıç: gizli (polygon tek nokta) — GSAP init'te set edilir
-              }}
-            >
-              {/* inner: scale animasyonu + img parallax */}
-              <div
-                ref={(el) => { innerRefs.current[i] = el; }}
-                className="w-full h-full relative"
-              >
-                <Image
-                  src={img.src}
-                  alt=""
-                  fill
-                  className="object-cover"
-                  style={{ borderRadius: isMobile ? "2vw" : "0.52vw" }}
-                  sizes={isMobile ? "50vw" : "25vw"}
-                />
-              </div>
+        {isMobile ? (
+          /* ── MOBİL: Karo (Grid) Düzeni ── */
+          <div className="px-6 flex flex-col gap-10">
+            {/* Üst 2 resim */}
+            <div className="grid grid-cols-2 gap-4">
+              {IMAGES_BASE.slice(0, 2).map((img, i) => (
+                <div key={i} className="relative aspect-[4/5] rounded-xl overflow-hidden shadow-lg">
+                  <Image src={img.src} alt="" fill className="object-cover" />
+                </div>
+              ))}
             </div>
-          ))}
-        </div>
 
-        {/* GooeyText — ortada, pointer-events yok */}
-        <div
-          className="absolute inset-0 flex items-center justify-center pointer-events-none"
-          style={{ zIndex: 2 }}
-        >
-          <GooeyText
-            texts={["doğal.", "taze.", "lezzetli."]}
-            morphTime={1.2}
-            cooldownTime={1.5}
-            className="w-[260px] md:w-[420px] lg:w-[560px] h-28 md:h-36 lg:h-44 font-serif"
-            textClassName="font-serif text-primary text-[3rem] md:text-[5rem] lg:text-[7rem]"
-          />
-        </div>
+            {/* Orta Yazı (GooeyText) */}
+            <div className="flex justify-center py-6 h-32 items-center">
+              <GooeyText
+                texts={["doğal.", "taze.", "lezzetli."]}
+                morphTime={1.2}
+                cooldownTime={1.5}
+                className="w-full max-w-[280px] font-serif"
+                textClassName="font-serif text-primary text-[3.2rem] text-center"
+              />
+            </div>
+
+            {/* Alt 3 resim (1 büyük, 2 küçük veya tersi) */}
+            <div className="grid grid-cols-2 gap-4">
+               <div className="relative aspect-square rounded-xl overflow-hidden shadow-lg col-span-2">
+                 <Image src={IMAGES_BASE[2].src} alt="" fill className="object-cover" />
+               </div>
+               {IMAGES_BASE.slice(3, 5).map((img, i) => (
+                <div key={i+3} className="relative aspect-square rounded-xl overflow-hidden shadow-lg">
+                  <Image src={img.src} alt="" fill className="object-cover" />
+                </div>
+              ))}
+            </div>
+          </div>
+        ) : (
+          /* ── DESKTOP: Parallax Galeri Düzeni ── */
+          <>
+            <div
+              ref={galleryRef}
+              className="absolute left-0 right-0 bottom-0 overflow-hidden"
+              style={{ zIndex: 1, top: "5vh" }}
+            >
+              {IMAGES_BASE.map((img, i) => (
+                <div
+                  key={i}
+                  ref={(el) => { wrapRefs.current[i] = el; }}
+                  className="absolute overflow-hidden shadow-2xl"
+                  style={{
+                    ...img.style,
+                    borderRadius: "0.52vw",
+                  }}
+                >
+                  <div
+                    ref={(el) => { innerRefs.current[i] = el; }}
+                    className="w-full h-full relative"
+                  >
+                    <Image
+                      src={img.src}
+                      alt=""
+                      fill
+                      className="object-cover"
+                      style={{ borderRadius: "0.52vw" }}
+                      sizes="25vw"
+                    />
+                  </div>
+                </div>
+              ))}
+            </div>
+
+            {/* GooeyText — Desktop Ortada */}
+            <div
+              className="absolute inset-0 flex items-center justify-center pointer-events-none"
+              style={{ zIndex: 2 }}
+            >
+              <GooeyText
+                texts={["doğal.", "taze.", "lezzetli."]}
+                morphTime={1.2}
+                cooldownTime={1.5}
+                className="w-[260px] md:w-[420px] lg:w-[560px] h-28 md:h-36 lg:h-44 font-serif"
+                textClassName="font-serif text-primary text-[3rem] md:text-[5rem] lg:text-[7rem]"
+              />
+            </div>
+          </>
+        )}
       </section>
     </>
   );
