@@ -344,7 +344,7 @@ export default function EtRehberi() {
         </div>
 
         {/* Sağ/Sol: Seçilen parçanın bilgisi */}
-        <div className="flex-1 w-full min-h-[20rem]">
+        <div className="flex-1 w-full min-h-[25rem] md:h-[660px] md:overflow-y-auto pr-0 md:pr-4 scrollbar-thin">
           <AnimatePresence mode="wait">
             {secilen ? (
               <motion.div
@@ -409,7 +409,7 @@ export default function EtRehberi() {
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 exit={{ opacity: 0 }}
-                className="h-full flex items-center justify-center text-center px-10 border-2 border-dashed border-neutral-300 rounded-3xl"
+                className="min-h-[25rem] md:min-h-full w-full flex items-center justify-center text-center px-10 border-2 border-dashed border-neutral-300 rounded-3xl py-12"
               >
                 <p className="text-neutral-400 text-xl font-medium">
                   Haritadaki et bölümüne tıklayarak o bölgeye ait bilgi ve pişirme kılavuzuna ulaşabilirsiniz.
