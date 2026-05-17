@@ -1,5 +1,5 @@
 // site/lib/config.ts
-import type { Urun, Kategori, MusteriGorseli } from "./types";
+import type { MusteriGorseli } from "./types";
 
 export const SITE = {
   marka: "Etlik Yayla Kasabı",
@@ -54,24 +54,6 @@ export const KARSILAMA = {
   metin:
     "Her sabah taze gelen etler, ustaca kesim ve hijyen garantisiyle sofranıza geliyor. Kalite bizim önceliğimiz.",
 };
-
-export const KATEGORILER: Kategori[] = [
-  { isim: "Kırmızı Et", slug: "kirmizi-et", gorsel: "/product_images/Dana Biftek 1 kg.jpg" },
-  { isim: "Beyaz Et", slug: "beyaz-et", gorsel: "/product_images/Kemiksiz Piliç Göğüs 1 kg.jpg" },
-  { isim: "Sakatat", slug: "sakatat", gorsel: "/product_images/Dana Ciğer 1 kg.jpg" },
-  { isim: "Şarküteri", slug: "sarküteri", gorsel: "/product_images/Dana Kavurma 1 kg.jpg" },
-];
-
-export const ONE_CIKANLAR: Urun[] = [
-  { isim: "Dana Bonfile", fiyat: "3.100,00 TL", gorsel: "/product_images/Dana Bonfile 1 kg.jpg", kategoriSlug: "kirmizi-et" },
-  { isim: "Kuzu Pirzola", fiyat: "2.850,00 TL", gorsel: "/product_images/Kuzu Pirzola 1 kg.jpg", kategoriSlug: "kirmizi-et" },
-  { isim: "Dana Antrikot", fiyat: "1.790,00 TL", gorsel: "/product_images/Dana Antrikot 1 kg.jpg", kategoriSlug: "kirmizi-et" },
-  { isim: "Tavuk Bonfile", fiyat: "550,00 TL", gorsel: "/product_images/Tavuk Bonfile 1 kg.jpg", kategoriSlug: "beyaz-et" },
-  { isim: "Piliç Biftek", fiyat: "700,00 TL", gorsel: "/product_images/Piliç Biftek 1 kg.jpg", kategoriSlug: "beyaz-et" },
-  { isim: "Dana Ciğer", fiyat: "990,00 TL", gorsel: "/product_images/Dana Ciğer 1 kg.jpg", kategoriSlug: "sakatat" },
-  { isim: "Dana Kavurma", fiyat: "2.500,00 TL", gorsel: "/product_images/Dana Kavurma 1 kg.jpg", kategoriSlug: "sarküteri" },
-  { isim: "Kasap Köfte", fiyat: "1.400,00 TL", gorsel: "/product_images/Kasap Köfte 1 kg.jpg", kategoriSlug: "kirmizi-et" },
-];
 
 export const KATALOG = {
   gorsel1: "/images/katalog-1.jpg",
