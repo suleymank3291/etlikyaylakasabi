@@ -3,7 +3,6 @@
 import { useState, useRef } from "react";
 import Image from "next/image";
 import { motion, AnimatePresence } from "framer-motion";
-import { products } from "../../data/products";
 import Footer from "@/components/Footer";
 
 type HotSpot = {
@@ -202,32 +201,6 @@ const DEFAULT_BILGI = {
   },
 };
 
-const PRODUCT_MAP: Record<string, string[]> = {
-  // Dana
-  "dana-sokum": ["Dana Sote 500 g", "Dana Kuşbaşı 500 g", "Dana Kuşbaşı 1 kg"],
-  "dana-tranc": ["Dana Sote 500 g", "Dana Kuşbaşı 500 g"],
-  "dana-nuar": ["Dana Gulaş 1 kg", "Dana Gulaş 500 g"],
-  "dana-incik": ["Kemikli Dana Eti 1 kg", "Dana Gulaş 1 kg", "Dana Gulaş 500 g"],
-  "dana-yumurta": ["Dana Sote 500 g", "Dana Kuşbaşı 500 g"],
-  "dana-penceta": ["Dana Döş 1 kg", "Dana Döş 500 g"],
-  "dana-bonfile": ["Dana Bonfile 1 kg", "Dana Bonfile 500 g", "Dana Lokum 1 kg"],
-  "dana-kontrfile": ["Dana Kontrfile 1 kg", "Dana Stroganoff 500 g", "Dana Biftek 1 kg"],
-  "dana-antrikot": ["Dana Antrikot 1 kg"],
-  "dana-kurek": ["Dana Kuşbaşı 1 kg", "Dana Kuşbaşı 500 g"],
-  "dana-gerdan": ["Dana Kıyma 1 kg", "Dana Kıyma 500 g"],
-  "dana-kol": ["Dana Kuşbaşı 1 kg", "Dana Kıyma 1 kg", "Dana Kıyma 500 g"],
-  "dana-dos": ["Dana Döş 1 kg", "Dana Döş 500 g", "Yağlı Dana Kıyma 1 kg", "Burger Köfte 1 kg"],
-
-  // Kuzu
-  "kuzu-gerdan": ["Kuzu Gerdan 1 kg", "Kuzu Gerdan 500 g"],
-  "kuzu-pirzola": ["Kuzu Pirzola 1 kg", "Kuzu Pirzola 500 g", "Izgaralık Kuzu Kaburga 1 kg"],
-  "kuzu-but": ["Kemikli Kuzu But 1 kg", "Kemiksiz Kuzu But 1 kg", "Kuzu Şişlik But 1 kg", "Kuzu Külbastı 1 kg"],
-  "kuzu-kol": ["Bütün Kuzu Kol 1 kg", "Kemiksiz Kuzu Kol 1 kg", "Kemikli Kuzu Kol 1 kg", "Kuzu Kuşbaşı 1 kg"],
-  "kuzu-kaburga": ["Izgaralık Kuzu Kaburga 1 kg"],
-  "kuzu-bosluk": ["Kavurmalık Kuzu 1 kg", "Kavurmalık Kuzu 500 g", "Kuzu Yağlı Kıyma 1 kg"],
-  "kuzu-incik": ["Kemikli Kuzu Kol 1 kg", "Kemikli Kuzu But 1 kg"],
-};
-
 export default function EtRehberi() {
   const [hayvan, setHayvan] = useState<"dana" | "kuzu">("dana");
   const [secilen, setSecilen] = useState<HotSpot | null>(null);
@@ -243,9 +216,6 @@ export default function EtRehberi() {
     setSecilen(null);
     setHovered(null);
   };
-
-  const ilgiliUrunIsimleri = secilen ? (PRODUCT_MAP[`${hayvan}-${secilen.id}`] || []) : [];
-  const renderUrunler = products.filter(p => ilgiliUrunIsimleri.includes(p.ad));
 
   return (
     <>
@@ -450,56 +420,6 @@ export default function EtRehberi() {
         </div>
       </div>
 
-      {/* Alt Bölüm: İlgili Ürünler (Tam Genişlik) */}
-      <div className="w-full max-w-[1800px] px-2 md:px-4 mt-16">
-        <AnimatePresence mode="wait">
-          {secilen && renderUrunler.length > 0 && (
-            <motion.div
-              key={"products-" + secilen.id}
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: 10 }}
-            >
-              <div className="flex items-center gap-3 mb-8">
-                <span
-                  className="text-xs font-black uppercase tracking-widest"
-                  style={{ color: "#BD2333" }}
-                >
-                  Bu Bölümden Elde Edilen Ürünler
-                </span>
-                <div className="flex-1 h-px bg-neutral-300" />
-              </div>
-              
-              <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4 md:gap-6">
-                {renderUrunler.map((urun, idx) => (
-                  <a
-                    key={idx}
-                    href="/katalog"
-                    className="group flex flex-col items-center bg-white rounded-2xl shadow-sm border border-neutral-200 overflow-hidden hover:shadow-xl transition-all duration-500 transform hover:-translate-y-2"
-                  >
-                    <div className="relative w-full aspect-square bg-neutral-100 overflow-hidden">
-                      <Image
-                        src={urun.resim}
-                        alt={urun.ad}
-                        fill
-                        className="object-cover group-hover:scale-110 transition-transform duration-700"
-                      />
-                    </div>
-                    <div className="p-5 flex flex-col items-center text-center w-full bg-white">
-                      <span className="text-sm md:text-base font-bold text-neutral-800 line-clamp-2 min-h-[3rem]">
-                        {urun.ad}
-                      </span>
-                      <span className="text-base font-black mt-2" style={{ color: "#BD2333" }}>
-                        {urun.fiyat}
-                      </span>
-                    </div>
-                  </a>
-                ))}
-              </div>
-            </motion.div>
-          )}
-        </AnimatePresence>
-      </div>
     </main>
     <Footer />
   </>
